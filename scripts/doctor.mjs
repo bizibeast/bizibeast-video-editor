@@ -55,16 +55,19 @@ export async function doctor({allowMissingEditor = false, allowMissingFonts = fa
     {name: "ffprobe", ...ffprobe},
     {name: "hyperframes-0.8.25", ok: hyperframesVersion.ok && hyperframesVersion.value === "0.8.25", value: hyperframesVersion.value},
     {name: "premiere-pro-mcp-1.14.5", ok: premiereVersion.ok && premiereVersion.value === "1.14.5", value: premiereVersion.value},
-    {name: "premiere-mcp-doctor", ok: allowMissingEditor ? Boolean(premiereDoctor?.schemaVersion) : premiereDoctor?.overall === "ready", value: premiereDoctor},
     {name: "sunburst-css", ok: await exists(path.join(repo, "templates/hyperframes/assets/sunburst.css"))},
     {name: "archivo-ofl", ok: await exists(path.join(repo, "templates/hyperframes/assets/fonts/OFL-Archivo.txt"))},
     {name: "fraunces-ofl", ok: await exists(path.join(repo, "templates/hyperframes/assets/fonts/OFL-Fraunces.txt"))}
   ];
   if (!allowMissingFonts) required.push(...fontChecks);
-  if (!allowMissingEditor) required.push({name: "premiere", ...premiere});
+  if (!allowMissingEditor) {
+    required.push({name: "premiere-mcp-doctor", ok: premiereDoctor?.overall === "ready", value: premiereDoctor});
+    required.push({name: "premiere", ...premiere});
+  }
   const optional = [
     ...fontChecks,
-    {name: "strict-runtime-override", ok: Boolean(process.env.BIZIBEAST_STRICT_RUNTIME)}
+    {name: "strict-runtime-override", ok: Boolean(process.env.BIZIBEAST_STRICT_RUNTIME)},
+    {name: "premiere-mcp-doctor", ok: premiereDoctor?.overall === "ready", value: premiereDoctor}
   ];
   const installReady = required.every(({ok}) => ok);
   return {ok: installReady, installReady, liveConnected: false, liveNote: "Install checks cannot prove a live Premiere project or sequence; run scripts/premiere.mjs verify.", versions: {hyperframes: hyperframesVersion.value, premiereMcp: premiereVersion.value}, required, optional, premiere};
