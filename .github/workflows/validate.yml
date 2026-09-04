@@ -15,6 +15,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - run: brew install ffmpeg
       - run: npm ci --ignore-scripts
       - run: node scripts/setup.mjs --install --json
       - run: npm run test:quick
