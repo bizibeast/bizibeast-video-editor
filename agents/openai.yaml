@@ -1,0 +1,7 @@
+interface:
+  display_name: "BiziBeast Video Editor"
+  short_description: "Local multi-agent Premiere video editing"
+  brand_color: "#EF3E24"
+  default_prompt: "Use $bizibeast-video-editor to turn my local footage into a polished vertical short in Crew mode."
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "premiere": {
+      "command": "node_modules/.bin/premiere-pro-mcp",
+      "env": {
+        "PREMIERE_MCP_CAPABILITIES": "inspect,edit,export,filesystem",
+        "PREMIERE_MCP_TRANSPORT": "stdio",
+        "DO_NOT_TRACK": "1"
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "sequence": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30
+  },
+  "story": [
+    {"source": "Source/generated-sample.mp4", "in": 0, "out": 4.8, "timelineStart": 0},
+    {"source": "Source/generated-sample.mp4", "in": 6, "out": 12, "timelineStart": 4.8}
+  ],
+  "graphics": [
+    {"template": "title", "start": 0, "duration": 1.5},
+    {"template": "captions", "start": 1.5, "duration": 5}
+  ],
+  "audio": {"dialogueTrack": "A1", "sfxTrack": "A2", "musicTrack": "A3"}
+}

@@ -1,0 +1,19 @@
+node_modules/
+.bizibeast/
+.DS_Store
+
+# Generated or private media
+Projects/
+QC/
+Tools/
+Models/
+Assets/
+**/Source/*.mp4
+**/Source/*.mov
+**/Source/*.wav
+**/Renders/
+**/Final/
+**/snapshots/
+templates/hyperframes/assets/fonts/*.ttf
+templates/hyperframes/assets/fonts/*.otf
+templates/hyperframes/assets/fonts/OFL-*.txt

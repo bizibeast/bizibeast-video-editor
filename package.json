@@ -1,0 +1,19 @@
+{
+  "name": "bizibeast-video-editor",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "test": "node --test",
+    "check": "node scripts/validate-repo.mjs && node --test"
+  },
+  "dependencies": {
+    "hyperframes": "0.8.25"
+  },
+  "optionalDependencies": {
+    "premiere-pro-mcp": "1.14.5"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "name": "BiziBeast sample short",
+  "slug": "bizibeast-sample-short",
+  "mode": "crew",
+  "localOnly": true,
+  "finalAssembler": "premiere",
+  "motionSystem": "hyperframes"
+}
