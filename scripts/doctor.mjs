@@ -18,6 +18,11 @@ async function command(name) {
   catch { return {ok: false, path: null}; }
 }
 
+async function output(bin, args) {
+  try { return {ok: true, value: (await exec(bin, args, {env: {...process.env, DO_NOT_TRACK: "1"}})).stdout.trim()}; }
+  catch (error) { return {ok: false, value: null, error: error.message}; }
+}
+
 async function premiereInstalled() {
   if (process.platform !== "darwin") return {ok: false, path: null};
   try {
@@ -26,26 +31,43 @@ async function premiereInstalled() {
   } catch { return {ok: false, path: null}; }
 }
 
-export async function doctor({allowMissingEditor = false} = {}) {
+export async function doctor({allowMissingEditor = false, allowMissingFonts = false} = {}) {
   const ffmpeg = await command("ffmpeg");
   const ffprobe = await command("ffprobe");
   const premiere = await premiereInstalled();
-  const required = [
-    {name: "node", ok: Number(process.versions.node.split(".")[0]) >= 20, value: process.version},
-    {name: "ffmpeg", ...ffmpeg},
-    {name: "ffprobe", ...ffprobe}
+  const hyperframesBin = path.join(repo, "node_modules/.bin/hyperframes");
+  const premiereBin = path.join(repo, "node_modules/.bin/premiere-pro-mcp");
+  const hyperframesVersion = await output(hyperframesBin, ["--version"]);
+  const premiereVersion = await output(premiereBin, ["--version"]);
+  const premiereDoctorOutput = await output(premiereBin, ["--doctor", "--json"]);
+  let premiereDoctor = null;
+  try { premiereDoctor = JSON.parse(premiereDoctorOutput.value); } catch {}
+  const fontChecks = [
+    {name: "archivo-font", ok: await exists(path.join(repo, "templates/hyperframes/assets/fonts/Archivo.ttf"))},
+    {name: "fraunces-font", ok: await exists(path.join(repo, "templates/hyperframes/assets/fonts/Fraunces.ttf"))}
   ];
+  const required = [
+    {name: "node-22", ok: Number(process.versions.node.split(".")[0]) >= 22, value: process.version},
+    {name: "ffmpeg", ...ffmpeg},
+    {name: "ffprobe", ...ffprobe},
+    {name: "hyperframes-0.8.25", ok: hyperframesVersion.ok && hyperframesVersion.value === "0.8.25", value: hyperframesVersion.value},
+    {name: "premiere-pro-mcp-1.14.5", ok: premiereVersion.ok && premiereVersion.value === "1.14.5", value: premiereVersion.value},
+    {name: "premiere-mcp-doctor", ok: allowMissingEditor ? Boolean(premiereDoctor?.schemaVersion) : premiereDoctor?.overall === "ready", value: premiereDoctor},
+    {name: "sunburst-css", ok: await exists(path.join(repo, "templates/hyperframes/assets/sunburst.css"))},
+    {name: "archivo-ofl", ok: await exists(path.join(repo, "templates/hyperframes/assets/fonts/OFL-Archivo.txt"))},
+    {name: "fraunces-ofl", ok: await exists(path.join(repo, "templates/hyperframes/assets/fonts/OFL-Fraunces.txt"))}
+  ];
+  if (!allowMissingFonts) required.push(...fontChecks);
   if (!allowMissingEditor) required.push({name: "premiere", ...premiere});
   const optional = [
-    {name: "hyperframes-0.8.25", ok: await exists(path.join(repo, "node_modules/.bin/hyperframes"))},
-    {name: "premiere-pro-mcp-1.14.5", ok: await exists(path.join(repo, "node_modules/.bin/premiere-pro-mcp"))},
-    {name: "sunburst-fonts", ok: await exists(path.join(repo, "templates/hyperframes/assets/fonts/Fraunces.ttf"))},
-    {name: "strict-runtime", ok: Boolean(process.env.BIZIBEAST_STRICT_RUNTIME)}
+    ...fontChecks,
+    {name: "strict-runtime-override", ok: Boolean(process.env.BIZIBEAST_STRICT_RUNTIME)}
   ];
-  return {ok: required.every(({ok}) => ok), required, optional, premiere};
+  const installReady = required.every(({ok}) => ok);
+  return {ok: installReady, installReady, liveConnected: false, liveNote: "Install checks cannot prove a live Premiere project or sequence; run scripts/premiere.mjs verify.", versions: {hyperframes: hyperframesVersion.value, premiereMcp: premiereVersion.value}, required, optional, premiere};
 }
 
 const {flags} = parseArgs(process.argv.slice(2));
-const result = await doctor({allowMissingEditor: Boolean(flags["allow-missing-editor"])});
+const result = await doctor({allowMissingEditor: Boolean(flags["allow-missing-editor"]), allowMissingFonts: Boolean(flags["allow-missing-fonts"])});
 print(result, flags.json);
 if (!result.ok) process.exitCode = 1;

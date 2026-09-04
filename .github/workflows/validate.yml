@@ -15,5 +15,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm install --ignore-scripts
-      - run: npm run check
+      - run: npm ci --ignore-scripts
+      - run: npm run test:quick
+      - run: npm run test:crew
+      - run: npm run test:strict
+      - run: node scripts/validate-repo.mjs
+      - run: npm run render:smoke

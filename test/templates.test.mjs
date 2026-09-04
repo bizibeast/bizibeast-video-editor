@@ -15,3 +15,13 @@ test("every HyperFrames composition is standalone and local-only", async () => {
     assert.doesNotMatch(body, /\.\.\/assets|https?:\/\//, name);
   }
 });
+
+test("fresh clones include shared styling and font licences", async () => {
+  const repo = path.resolve(root, "../../..");
+  for (const relative of ["templates/hyperframes/assets/sunburst.css", "templates/hyperframes/assets/fonts/OFL-Archivo.txt", "templates/hyperframes/assets/fonts/OFL-Fraunces.txt"]) {
+    assert.ok((await readFile(path.join(repo, relative), "utf8")).length > 100, relative);
+  }
+  const ignore = await readFile(path.join(repo, ".gitignore"), "utf8");
+  assert.doesNotMatch(ignore, /^Assets\//m);
+  assert.match(ignore, /^\/Assets\//m);
+});

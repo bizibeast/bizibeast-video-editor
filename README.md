@@ -16,7 +16,7 @@ It is a skill and a small toolbox—not a hosted app. Your footage, transcripts,
 
 ## Requirements
 
-- Node.js 20.19 or newer
+- Node.js 22 or newer
 - FFmpeg and FFprobe
 - Adobe Premiere Pro
 - A supported agent client that can load Agent Skills and connect to MCP servers
@@ -31,9 +31,16 @@ node scripts/setup.mjs --install
 node scripts/doctor.mjs
 ```
 
-`setup.mjs` installs the exact npm dependencies with lifecycle scripts disabled, downloads Archivo and Fraunces directly from the Google Fonts repository together with their OFL files, detects local tools, and writes ignored machine-specific config under `.bizibeast/`.
+`setup.mjs` installs the exact npm dependencies with lifecycle scripts disabled, downloads Archivo and Fraunces directly from the Google Fonts repository, detects local tools, and writes ignored machine-specific config under `.bizibeast/`. Matching OFL text ships beside the font destination.
 
-Copy or symlink this repository into your agent's skills directory. In Codex, install it under the configured skills location and invoke `$bizibeast-video-editor`.
+Install it for Codex:
+
+```bash
+mkdir -p ~/.codex/skills
+ln -s "$(pwd)" ~/.codex/skills/bizibeast-video-editor
+```
+
+For any Agent Skills-compatible client, link or copy the repository into that client's skills directory. Restart the client, then invoke `$bizibeast-video-editor`.
 
 The generated `.bizibeast/mcp.json` contains the local command for Premiere MCP. Add that server entry to your agent client. The MCP server is limited to `inspect,edit,export,filesystem`; arbitrary scripting is intentionally excluded. The Adobe-side connector must be installed separately from the reviewed upstream `v1.14.5` release by following its official instructions.
 
@@ -43,7 +50,7 @@ The generated `.bizibeast/mcp.json` contains the local command for Premiere MCP.
 Use $bizibeast-video-editor in Crew mode. Edit the footage in this folder into a polished 45-second vertical short. Keep everything local.
 ```
 
-Crew mode is the default and delegates media, story, design, HyperFrames, Premiere and QC roles when the host supports subagents. Without subagents, the same roles run sequentially. Quick mode uses one editor agent. Strict mode can connect to the optional audit-grade runtime described in `runtime/strict/README.md`.
+Crew mode is the default and delegates media, story, design, HyperFrames, Premiere and QC roles when the host supports subagents. Without subagents, the same roles run sequentially. Quick mode uses one editor agent. Strict mode uses the bundled portable audit runtime described in `runtime/strict/README.md`.
 
 Create a project manually if useful:
 
@@ -52,6 +59,13 @@ node scripts/new-project.mjs "Launch short"
 node scripts/sample-fixture.mjs
 node scripts/render-hyperframes.mjs --template title --output Projects/launch-short/Renders/title-v001.mp4
 node scripts/qc.mjs Projects/launch-short/Final/launch-short-v001.mp4 --report Projects/launch-short/QC/final-v001.json
+```
+
+Before an edit, verify the live Premiere bridge; after structural changes, capture readback:
+
+```bash
+node scripts/premiere.mjs verify --json
+node scripts/premiere.mjs readback --output Projects/launch-short/QC/premiere-readback-v001.json --json
 ```
 
 ## Templates
@@ -67,6 +81,8 @@ Local-only is the default. The skill never authorizes publishing. Voice cloning 
 ```bash
 npm test
 npm run check
+npm run test:strict
+npm run render:smoke
 ```
 
 Generate the 12-second test clip locally, then QC it:

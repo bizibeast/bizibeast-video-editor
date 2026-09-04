@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-09-04T06:09:21Z",
+  "project": "sample-short",
+  "mode": "crew",
+  "premiere": {
+    "liveVerified": true,
+    "sequenceId": "445e68cd-c8c5-4a05-a708-6c5703677834",
+    "sequenceName": "BB-premiere-live-smoke-v001",
+    "premiereReadbackReceiptSha256": null,
+    "captionStructuralReadbackSupported": false,
+    "nativeCaptionRequestAccepted": true,
+    "nativeCaptionVisualVerification": true,
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "durationSeconds": 12,
+    "videoTrackCount": 4,
+    "audioTrackCount": 4,
+    "timeline": [
+      {"track": "V1", "asset": "generated-sample.mp4", "start": 0, "end": 12, "online": true},
+      {"track": "V4", "asset": "captions.mov", "start": 0, "end": 5, "online": true},
+      {"track": "A1", "asset": "generated-sample.mp4", "start": 0, "end": 12, "online": true}
+    ],
+    "offlineMediaCount": 0,
+    "gapCount": 0,
+    "visualEvidenceSeconds": [1.5, 4.0],
+    "visualEvidence": "Native SRT subtitles and the designed HyperFrames overlay were visible simultaneously."
+  },
+  "export": {
+    "sha256": "97f8bb3bc1d4f4ab2fcc6e8880600a615f4028d24980106925296da0b25b6133",
+    "bytes": 15234797,
+    "durationSeconds": 12,
+    "video": {"codec": "h264", "width": 1080, "height": 1920, "fps": 30},
+    "audio": {"codec": "aac", "sampleRate": 48000, "channels": 2}
+  },
+  "qc": {
+    "technical": "pass",
+    "creative": "pass",
+    "fullDecode": "pass"
+  },
+  "limitations": [
+    "CEP reported captionReadSupported=false, so native caption presence was verified visually rather than by structural caption readback.",
+    "Encoder preset discovery failed; the installed Adobe Match Source H.264 preset was validated by the host and exported successfully.",
+    "This is a practical live-smoke record, not Strict-mode canonical evidence."
+  ]
+}

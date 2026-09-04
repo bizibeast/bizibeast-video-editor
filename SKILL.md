@@ -16,7 +16,7 @@ Turn supplied footage or an approved script into a polished, self-contained loca
 
 ## Start
 
-Run `node scripts/doctor.mjs --json`, then read [project layout](references/project.md). Create a project with `node scripts/new-project.mjs "Project name"` unless resuming one.
+Treat the directory containing this `SKILL.md` as `skillRoot`; resolve every linked reference and script relative to it, regardless of the user's working directory. Run `node <skillRoot>/scripts/doctor.mjs --json`, then read [project layout](references/project.md). Create a project with `node <skillRoot>/scripts/new-project.mjs "Project name"` unless resuming one.
 
 Choose the mode from the user's words:
 

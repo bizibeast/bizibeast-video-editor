@@ -2,13 +2,12 @@
 import {spawn} from "node:child_process";
 import {access} from "node:fs/promises";
 import path from "node:path";
+import {fileURLToPath} from "node:url";
 
 const runtime = process.env.BIZIBEAST_STRICT_RUNTIME;
-if (!runtime) {
-  process.stderr.write("Strict mode needs BIZIBEAST_STRICT_RUNTIME pointing to a compatible Content Hub runtime checkout.\n");
-  process.exit(2);
-}
-const cli = path.join(path.resolve(runtime), "bin/content-hub.mjs");
+const cli = runtime
+  ? path.join(path.resolve(runtime), "bin/content-hub.mjs")
+  : path.join(path.dirname(fileURLToPath(import.meta.url)), "cli.mjs");
 try {
   await access(cli);
   const child = spawn(process.execPath, [cli, ...process.argv.slice(2)], {stdio: "inherit", env: process.env});

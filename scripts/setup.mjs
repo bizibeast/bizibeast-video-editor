@@ -10,9 +10,7 @@ const exec = promisify(execFile);
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const FONT_FILES = Object.freeze({
   "Archivo.ttf": "https://raw.githubusercontent.com/google/fonts/main/ofl/archivo/Archivo%5Bwdth%2Cwght%5D.ttf",
-  "Fraunces.ttf": "https://raw.githubusercontent.com/google/fonts/main/ofl/fraunces/Fraunces%5BSOFT%2CWONK%2Copsz%2Cwght%5D.ttf",
-  "OFL-Archivo.txt": "https://raw.githubusercontent.com/google/fonts/main/ofl/archivo/OFL.txt",
-  "OFL-Fraunces.txt": "https://raw.githubusercontent.com/google/fonts/main/ofl/fraunces/OFL.txt"
+  "Fraunces.ttf": "https://raw.githubusercontent.com/google/fonts/main/ofl/fraunces/Fraunces%5BSOFT%2CWONK%2Copsz%2Cwght%5D.ttf"
 });
 
 async function commandPath(name) {

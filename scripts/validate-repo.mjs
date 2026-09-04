@@ -4,7 +4,7 @@ import path from "node:path";
 import {fileURLToPath} from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const required = ["SKILL.md", "agents/openai.yaml", "README.md", "LICENSE", "THIRD_PARTY_NOTICES.md", "templates/hyperframes/compositions/title.html"];
+const required = ["SKILL.md", "agents/openai.yaml", "README.md", "LICENSE", "THIRD_PARTY_NOTICES.md", "runtime/strict/core.mjs", "scripts/ingest.mjs", "scripts/premiere.mjs", "templates/hyperframes/compositions/title.html", "templates/hyperframes/assets/sunburst.css", "templates/hyperframes/assets/fonts/OFL-Archivo.txt", "templates/hyperframes/assets/fonts/OFL-Fraunces.txt"];
 
 async function walk(directory) {
   const result = [];

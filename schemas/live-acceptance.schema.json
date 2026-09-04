@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bizibeast.dev/schemas/live-acceptance.schema.json",
+  "type": "object",
+  "required": ["schemaVersion", "recordedAt", "project", "mode", "premiere", "export", "qc"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "recordedAt": {"type": "string", "format": "date-time"},
+    "project": {"type": "string"},
+    "mode": {"enum": ["quick", "crew", "strict"]},
+    "premiere": {
+      "type": "object",
+      "required": ["liveVerified", "sequenceId", "premiereReadbackReceiptSha256"],
+      "properties": {
+        "liveVerified": {"const": true},
+        "sequenceId": {"type": "string"},
+        "premiereReadbackReceiptSha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+        "captionStructuralReadbackSupported": {"type": "boolean"},
+        "nativeCaptionRequestAccepted": {"type": "boolean"},
+        "nativeCaptionVisualVerification": {"type": "boolean"}
+      }
+    },
+    "export": {
+      "type": "object",
+      "required": ["sha256", "durationSeconds"],
+      "properties": {
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "durationSeconds": {"type": "number", "exclusiveMinimum": 0}
+      }
+    },
+    "qc": {
+      "type": "object",
+      "required": ["technical", "creative"],
+      "properties": {
+        "technical": {"const": "pass"},
+        "creative": {"const": "pass"}
+      }
+    }
+  }
+}

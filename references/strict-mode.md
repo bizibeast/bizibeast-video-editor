@@ -2,12 +2,12 @@
 
 Strict mode is optional. It adds immutable artifacts, exact parent hashes, separate producers and approvers, workflow transitions, candidate freezing, retry records, technical QC, creative QC, and promotion evidence.
 
-The original strict runtime is coupled to the larger Content Hub repository and is intentionally not duplicated here. Point `BIZIBEAST_STRICT_RUNTIME` at a compatible local runtime checkout, then run:
+The portable runtime is bundled. Run:
 
 ```bash
 node runtime/strict/adapter.mjs doctor --json
 ```
 
-The adapter passes arguments directly to that runtime's `bin/content-hub.mjs`. Quick and Crew modes never depend on this environment variable.
+The adapter uses `runtime/strict/cli.mjs` by default. Advanced users may point `BIZIBEAST_STRICT_RUNTIME` at a compatible larger runtime checkout; the environment override is optional. Quick and Crew modes never depend on it.
 
-Use Strict only when the user explicitly requests an audit trail or independent approvals. If the runtime is absent, report that Strict is unavailable and offer Crew mode; do not fake receipts.
+Use Strict only when the user explicitly requests an audit trail or independent approvals. Do not fake receipts.

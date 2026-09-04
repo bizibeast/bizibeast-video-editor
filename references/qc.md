@@ -1,6 +1,6 @@
 # QC and delivery
 
-Run `node scripts/qc.mjs <export> --report QC/final-vNNN.json --json`. This verifies streams, duration, portrait dimensions and full decode. Use `--profile any` for non-portrait work.
+Run `node scripts/qc.mjs <export> --captions Plans/captions.json --report QC/final-vNNN.json --json`. This verifies full decode, codec, duration, dimensions, frame rate, audio sample rate, black frames, long silence, loudness, true peak, and caption timing. Use `--profile any` for non-portrait work and omit `--captions` when no caption plan exists.
 
 Then perform visual QC at minimum on the hook, all transitions, caption-dense moments, layered shots and final frame. Check:
 

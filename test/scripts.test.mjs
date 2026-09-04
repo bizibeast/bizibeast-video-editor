@@ -16,8 +16,11 @@ test("setup and doctor expose safe machine-readable dry runs", async () => {
   assert.equal(setup.mcp.mcpServers.premiere.env.PREMIERE_MCP_CAPABILITIES, "inspect,edit,export,filesystem");
   assert.doesNotMatch(setup.mcp.mcpServers.premiere.command, /\/Users\//);
 
-  const doctor = JSON.parse((await exec(process.execPath, ["scripts/doctor.mjs", "--json", "--allow-missing-editor"], {cwd: root})).stdout);
+  const doctor = JSON.parse((await exec(process.execPath, ["scripts/doctor.mjs", "--json", "--allow-missing-editor", "--allow-missing-fonts"], {cwd: root})).stdout);
   assert.equal(doctor.required.every(({ok}) => ok), true);
+  assert.equal(doctor.versions.hyperframes, "0.8.25");
+  assert.equal(doctor.versions.premiereMcp, "1.14.5");
+  assert.equal(typeof doctor.liveConnected, "boolean");
 });
 
 test("render and QC support non-mutating dry runs", async () => {
@@ -27,5 +30,5 @@ test("render and QC support non-mutating dry runs", async () => {
   assert.equal(render.command[render.command.indexOf("-c") + 1], "compositions/title.html");
 
   const qc = JSON.parse((await exec(process.execPath, ["scripts/qc.mjs", "missing.mp4", "--dry-run", "--json"], {cwd: root})).stdout);
-  assert.equal(qc.commands.length, 2);
+  assert.equal(qc.commands.length, 4);
 });

@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "language": "en",
+  "segments": [
+    {
+      "start": 0.4,
+      "end": 1.7,
+      "text": "Start with the hook.",
+      "words": [
+        {"start": 0.4, "end": 0.72, "text": "Start"},
+        {"start": 0.72, "end": 0.93, "text": "with"},
+        {"start": 0.93, "end": 1.08, "text": "the"},
+        {"start": 1.08, "end": 1.7, "text": "hook."}
+      ]
+    },
+    {"start": 1.9, "end": 3.5, "text": "Make every frame earn attention."}
+  ]
+}
