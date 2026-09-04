@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import {execFile} from "node:child_process";
-import {access, readdir} from "node:fs/promises";
+import {access, readFile, readdir} from "node:fs/promises";
 import path from "node:path";
 import {promisify} from "node:util";
 import {fileURLToPath} from "node:url";
@@ -11,6 +11,13 @@ const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 async function exists(target) {
   try { await access(target); return true; } catch { return false; }
+}
+
+async function installedPackageVersion(name) {
+  try {
+    const metadata = JSON.parse(await readFile(path.join(repo, "node_modules", name, "package.json"), "utf8"));
+    return typeof metadata.version === "string" ? metadata.version : null;
+  } catch { return null; }
 }
 
 async function command(name) {
@@ -42,6 +49,7 @@ export async function doctor({allowMissingEditor = false, allowMissingFonts = fa
   const premiereBin = path.join(repo, "node_modules/.bin/premiere-pro-mcp");
   const hyperframesVersion = await output(hyperframesBin, ["--version"]);
   const premiereVersion = await output(premiereBin, ["--version"]);
+  const premierePackageVersion = await installedPackageVersion("premiere-pro-mcp");
   const premiereDoctorOutput = await output(premiereBin, ["--doctor", "--json"]);
   let premiereDoctor = null;
   try { premiereDoctor = JSON.parse(premiereDoctorOutput.value); } catch {}
@@ -54,7 +62,7 @@ export async function doctor({allowMissingEditor = false, allowMissingFonts = fa
     {name: "ffmpeg", ...ffmpeg},
     {name: "ffprobe", ...ffprobe},
     {name: "hyperframes-0.8.25", ok: hyperframesVersion.ok && hyperframesVersion.value === "0.8.25", value: hyperframesVersion.value},
-    {name: "premiere-pro-mcp-1.14.5", ok: premiereVersion.ok && premiereVersion.value === "1.14.5", value: premiereVersion.value},
+    {name: "premiere-pro-mcp-1.14.5", ok: premierePackageVersion === "1.14.5" && (allowMissingEditor || premiereVersion.ok), value: premierePackageVersion},
     {name: "sunburst-css", ok: await exists(path.join(repo, "templates/hyperframes/assets/sunburst.css"))},
     {name: "archivo-ofl", ok: await exists(path.join(repo, "templates/hyperframes/assets/fonts/OFL-Archivo.txt"))},
     {name: "fraunces-ofl", ok: await exists(path.join(repo, "templates/hyperframes/assets/fonts/OFL-Fraunces.txt"))}
@@ -70,7 +78,7 @@ export async function doctor({allowMissingEditor = false, allowMissingFonts = fa
     {name: "premiere-mcp-doctor", ok: premiereDoctor?.overall === "ready", value: premiereDoctor}
   ];
   const installReady = required.every(({ok}) => ok);
-  return {ok: installReady, installReady, liveConnected: false, liveNote: "Install checks cannot prove a live Premiere project or sequence; run scripts/premiere.mjs verify.", versions: {hyperframes: hyperframesVersion.value, premiereMcp: premiereVersion.value}, required, optional, premiere};
+  return {ok: installReady, installReady, liveConnected: false, liveNote: "Install checks cannot prove a live Premiere project or sequence; run scripts/premiere.mjs verify.", versions: {hyperframes: hyperframesVersion.value, premiereMcp: premierePackageVersion}, required, optional, premiere};
 }
 
 const {flags} = parseArgs(process.argv.slice(2));
