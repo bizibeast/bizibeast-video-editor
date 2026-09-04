@@ -20,7 +20,10 @@ async function command(name) {
 
 async function output(bin, args) {
   try { return {ok: true, value: (await exec(bin, args, {env: {...process.env, DO_NOT_TRACK: "1"}})).stdout.trim()}; }
-  catch (error) { return {ok: false, value: null, error: error.message}; }
+  catch (error) {
+    const value = String(error.stdout ?? "").trim() || null;
+    return {ok: false, value, error: error.message};
+  }
 }
 
 async function premiereInstalled() {
