@@ -16,6 +16,7 @@ jobs:
         with:
           node-version: 22
       - run: npm ci --ignore-scripts
+      - run: node scripts/setup.mjs --install --json
       - run: npm run test:quick
       - run: npm run test:crew
       - run: npm run test:strict

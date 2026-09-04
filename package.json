@@ -7,12 +7,12 @@
     "node": ">=22"
   },
   "scripts": {
-    "test": "node --test",
+    "test": "node --test test/*.test.mjs",
     "test:quick": "node --test test/mode.test.mjs test/project.test.mjs test/scripts.test.mjs",
     "test:crew": "node --test test/media-tools.test.mjs test/premiere.test.mjs test/acceptance.test.mjs test/templates.test.mjs",
-    "test:strict": "node --test test/strict.test.mjs",
+    "test:strict": "node --test runtime/strict/engine/test/artifacts.test.mjs runtime/strict/engine/test/roles-approvals.test.mjs runtime/strict/engine/test/workflow.test.mjs runtime/strict/engine/test/candidates.test.mjs runtime/strict/engine/test/retry-policy.test.mjs runtime/strict/engine/test/qc.test.mjs runtime/strict/engine/test/creative-qc.test.mjs runtime/strict/engine/test/release.test.mjs runtime/strict/engine/test/video-execution.test.mjs test/strict-adapter.test.mjs",
     "render:smoke": "node scripts/render-smoke.mjs --json",
-    "check": "node scripts/validate-repo.mjs && node --test"
+    "check": "node scripts/validate-repo.mjs && npm test"
   },
   "dependencies": {
     "hyperframes": "0.8.25"

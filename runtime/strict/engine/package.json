@@ -1,0 +1,16 @@
+{
+  "name": "content-hub-editor",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "content-hub": "./bin/content-hub.mjs"
+  },
+  "scripts": {
+    "test": "node --test",
+    "check": "node --test"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

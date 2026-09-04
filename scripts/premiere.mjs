@@ -7,6 +7,17 @@ import {fileURLToPath} from "node:url";
 import {parseArgs, print} from "./args.mjs";
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+export const INSPECT_TIMEOUT_MS = 15_000;
+
+export function resolveMutationTimeout(env = process.env) {
+  const value = Number(env.BIZIBEAST_PREMIERE_TIMEOUT_MS || 1_800_000);
+  if (!Number.isInteger(value) || value < 30_000 || value > 1_800_000) throw new Error("BIZIBEAST_PREMIERE_TIMEOUT_MS must be between 30000 and 1800000");
+  return value;
+}
+
+export function timeoutMessage(operation, timeoutMs) {
+  return `Premiere MCP ${operation} timed out after ${timeoutMs}ms; the operation may still be running. Do not retry it blindly. Run Premiere readback before deciding what to do.`;
+}
 
 export function parseToolData(result) {
   const block = result?.content?.find(({type}) => type === "text");
@@ -64,20 +75,20 @@ class StdioMcpClient {
     return this;
   }
 
-  request(method, params) {
+  request(method, params, timeoutMs = INSPECT_TIMEOUT_MS) {
     const id = this.nextId++;
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
         this.pending.delete(id);
-        reject(new Error(`Premiere MCP ${method} timed out`));
-      }, 15_000);
+        reject(new Error(timeoutMessage(method, timeoutMs)));
+      }, timeoutMs);
       this.pending.set(id, {resolve, reject, timer});
       this.child.stdin.write(`${JSON.stringify({jsonrpc: "2.0", id, method, params})}\n`);
     });
   }
 
-  call(name, args = {}) {
-    return this.request("tools/call", {name, arguments: args});
+  call(name, args = {}, timeoutMs = INSPECT_TIMEOUT_MS) {
+    return this.request("tools/call", {name, arguments: args}, timeoutMs);
   }
 
   close() {
@@ -118,7 +129,7 @@ async function main() {
     const args = JSON.parse(await readFile(path.resolve(flags.input), "utf8"));
     result = await withPremiere(async (client) => {
       assertLiveReport(parseToolData(await client.call("verify_premiere_connection", {backend: "cep"})));
-      const edit = parseToolData(await client.call(flags.tool, args));
+      const edit = parseToolData(await client.call(flags.tool, args, resolveMutationTimeout()));
       const sequence = parseToolData(await client.call("get_active_sequence"));
       return {edit, sequence};
     });

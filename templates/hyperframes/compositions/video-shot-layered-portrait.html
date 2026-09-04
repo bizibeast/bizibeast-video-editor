@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en" data-composition-variables='[{"id":"backLayer","type":"string","label":"Approved back-layer JSON","default":"{\"layers\":[{\"id\":\"preview-back\",\"role\":\"back\",\"inMs\":0,\"outMs\":5000,\"entryFrames\":12,\"staggerFrames\":4,\"settleFrames\":15,\"holdFrames\":null,\"exitFrames\":8,\"easing\":\"power4.out\",\"fromScale\":0.88,\"toScale\":1,\"overshoot\":0,\"content\":{\"text\":\"One clear visual idea\",\"asset\":null},\"geometry\":{\"x\":68,\"y\":130,\"width\":944,\"height\":330}}]}"},{"id":"foregroundLayer","type":"string","label":"Approved foreground-layer JSON","default":"{\"layers\":[{\"id\":\"preview-foreground\",\"role\":\"foreground\",\"inMs\":300,\"outMs\":4700,\"entryFrames\":12,\"staggerFrames\":4,\"settleFrames\":15,\"holdFrames\":null,\"exitFrames\":8,\"easing\":\"power3.out\",\"fromScale\":0.88,\"toScale\":1,\"overshoot\":0.02,\"content\":{\"text\":\"Built from the approved layer contract\",\"asset\":null},\"geometry\":{\"x\":582,\"y\":1228,\"width\":430,\"height\":172}}]}"},{"id":"captionLayer","type":"string","label":"Approved caption-layer JSON","default":"{\"layers\":[{\"id\":\"preview-caption\",\"role\":\"caption\",\"inMs\":0,\"outMs\":5000,\"entryFrames\":12,\"staggerFrames\":4,\"settleFrames\":15,\"holdFrames\":null,\"exitFrames\":8,\"easing\":\"power3.out\",\"fromScale\":0.88,\"toScale\":1,\"overshoot\":0,\"content\":{\"text\":\"\",\"asset\":null},\"geometry\":{\"x\":72,\"y\":1460,\"width\":936,\"height\":280}}]}"},{"id":"captions","type":"string","label":"Canonical caption JSON","default":"{\"segments\":[{\"start\":0.7,\"end\":3.8,\"text\":\"Designed captions stay on their own layer\"}],\"durationSeconds\":5}"},{"id":"style","type":"enum","label":"Caption identity","default":"editorial-pair","options":[{"value":"clean","label":"Clean"},{"value":"editorial-pair","label":"Editorial Pair"},{"value":"punch","label":"Punch"},{"value":"karaoke-pair","label":"Karaoke Pair"}]},{"id":"durationSeconds","type":"number","label":"Duration","default":5},{"id":"fps","type":"number","label":"Frame rate","default":30},{"id":"backAssetUrl","type":"string","label":"Frozen back asset bytes","default":"data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="},{"id":"foregroundAssetUrl","type":"string","label":"Frozen foreground asset bytes","default":"data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="},{"id":"showBack","type":"boolean","label":"Render back graphics","default":true},{"id":"showForeground","type":"boolean","label":"Render foreground graphics","default":true},{"id":"showCaptions","type":"boolean","label":"Render captions","default":true}]'>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1080, height=1920" />
+  <title>BiziBeast strict layered portrait shot</title>
+  <link rel="stylesheet" href="assets/sunburst.css" />
+  <style>
+    @font-face { font-family: "Archivo"; src: url("assets/fonts/Archivo.ttf") format("truetype"); font-weight: 100 900; font-display: block; }
+    @font-face { font-family: "Fraunces"; src: url("assets/fonts/Fraunces.ttf") format("truetype"); font-weight: 100 900; font-display: block; }
+    html, body { margin: 0; width: 100%; height: 100%; background: transparent; overflow: hidden; }
+    * { box-sizing: border-box; }
+    #shot-root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: transparent; color: #fff; font-family: Archivo, Arial, sans-serif; }
+    .clip { position: absolute; inset: 0; width: 1080px; height: 1920px; pointer-events: none; }
+    #back-clip { z-index: 10; }
+    #foreground-clip { z-index: 30; }
+    #caption-clip { z-index: 40; }
+    #back-asset { z-index: 5; object-fit: cover; opacity: 0; }
+    #foreground-asset { z-index: 25; object-fit: cover; opacity: 0; }
+    .back-graphic { position: absolute; padding: 58px; border-radius: 48px; background: linear-gradient(135deg, rgba(26,31,39,.94), rgba(255,74,31,.84)); box-shadow: 0 32px 90px rgba(0,0,0,.28); }
+    .back-kicker { display: block; margin-bottom: 22px; color: #ffd84d; font-size: 30px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+    .back-text { display: block; max-width: 820px; font-family: Fraunces, Georgia, serif; font-size: 82px; font-weight: 800; line-height: .98; }
+    .foreground-graphic { position: absolute; padding: 34px 38px; border: 3px solid rgba(255,255,255,.88); border-radius: 34px; background: rgba(14,18,24,.82); box-shadow: 0 24px 60px rgba(0,0,0,.32); }
+    .foreground-text { display: block; font-size: 42px; font-weight: 850; line-height: 1.02; }
+    .caption-rail { position: absolute; left: 72px; right: 72px; bottom: 180px; min-height: 280px; display: grid; align-items: end; justify-items: center; }
+    .caption-cue { position: absolute; bottom: 0; max-width: 900px; padding: 22px 30px; border-radius: 24px; background: rgba(12,16,22,.9); box-shadow: 0 16px 48px rgba(0,0,0,.3); font-size: 56px; font-weight: 850; line-height: 1.06; text-align: center; opacity: 0; }
+    .caption-cue[data-style="punch"] { color: #ffd84d; font-size: 68px; text-transform: uppercase; }
+    .caption-cue[data-style="clean"] { background: rgba(12,16,22,.72); font-size: 50px; }
+  </style>
+</head>
+<body>
+  <div id="shot-root" data-composition-id="bizibeast-layered-shot-v1" data-no-timeline data-start="0" data-width="1080" data-height="1920" data-duration="5">
+    <img id="back-asset" class="clip" data-start="0" data-duration="5" data-track-index="4" data-var-src="backAssetUrl" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="" />
+    <img id="foreground-asset" class="clip" data-start="0" data-duration="5" data-track-index="5" data-var-src="foregroundAssetUrl" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=" alt="" />
+    <section id="back-clip" class="clip" data-start="0" data-duration="5" data-track-index="1"><div id="back-stack"></div></section>
+    <section id="foreground-clip" class="clip" data-start="0" data-duration="5" data-track-index="2"><div id="foreground-stack"></div></section>
+    <section id="caption-clip" class="clip" data-start="0" data-duration="5" data-track-index="3"><div id="caption-rail" class="caption-rail"></div></section>
+  </div>
+  <script>
+    const values = window.__hyperframes.getVariables();
+    const parse = (value, fallback) => { try { return JSON.parse(value); } catch { return fallback; } };
+    const back = parse(values.backLayer, {layers: []});
+    const foreground = parse(values.foregroundLayer, {layers: []});
+    const captionLayer = parse(values.captionLayer, {layers: []});
+    const captionBundle = parse(values.captions, {segments: []});
+    const duration = Math.max(.1, Number(values.durationSeconds) || 5);
+    const fps = Math.max(1, Number(values.fps) || 30);
+    for (const clip of document.querySelectorAll(".clip")) clip.dataset.duration = String(duration);
+
+    const materialize = (stackId, bundle, role) => (bundle.layers || []).map((layer, index) => {
+      const node = document.createElement("div");
+      node.id = `${role}-layer-${index}`;
+      node.className = role === "back" ? "back-graphic" : "foreground-graphic";
+      const geometry = layer.geometry || {};
+      Object.assign(node.style, {left: `${geometry.x}px`, top: `${geometry.y}px`, width: `${geometry.width}px`, minHeight: `${geometry.height}px`});
+      node.dataset.assetSha256 = layer.content?.asset?.sha256 || "";
+      if (role === "back") {
+        const kicker = document.createElement("span");
+        kicker.className = "back-kicker";
+        kicker.textContent = "BiziBeast";
+        node.appendChild(kicker);
+      }
+      const copy = document.createElement("span");
+      copy.className = role === "back" ? "back-text" : "foreground-text";
+      copy.textContent = layer.content?.text || "";
+      node.appendChild(copy);
+      document.getElementById(stackId).appendChild(node);
+      return {node, layer};
+    });
+
+    const backLayers = values.showBack ? materialize("back-stack", back, "back") : [];
+    const foregroundLayers = values.showForeground ? materialize("foreground-stack", foreground, "foreground") : [];
+    const positionAsset = (id, layer, show) => {
+      const image = document.getElementById(id);
+      if (!show || !layer?.content?.asset) return null;
+      const geometry = layer.geometry;
+      Object.assign(image.style, {left: `${geometry.x}px`, top: `${geometry.y}px`, right: "auto", bottom: "auto", width: `${geometry.width}px`, height: `${geometry.height}px`, opacity: "1"});
+      return {node: image, layer};
+    };
+    const assets = [positionAsset("back-asset", back.layers?.[0], values.showBack), positionAsset("foreground-asset", foreground.layers?.[0], values.showForeground)].filter(Boolean);
+    const cues = values.showCaptions ? (captionBundle.segments || []) : [];
+    for (const [index, cue] of cues.entries()) {
+      const node = document.createElement("div");
+      node.id = `layered-caption-${index}`;
+      node.className = "caption-cue";
+      node.dataset.style = values.style;
+      node.textContent = cue.text || "";
+      document.getElementById("caption-rail").appendChild(node);
+    }
+
+    const animateLayer = (node, layer) => {
+      const start = Math.max(0, Number(layer.inMs) + (layer.staggerFrames / fps * 1000));
+      const end = Math.min(duration * 1000, Number(layer.outMs));
+      const total = Math.max(1, end - start);
+      const entry = Math.min(1, layer.entryFrames / fps * 1000 / total);
+      const settled = Math.min(1, entry + layer.settleFrames / fps * 1000 / total);
+      const exit = Math.max(settled, 1 - layer.exitFrames / fps * 1000 / total);
+      const x = layer.role === "foreground" ? 54 : 0;
+      const y = layer.role === "back" ? -42 : 0;
+      const transform = (moveX, moveY, scale) => `translate(${moveX}px, ${moveY}px) scale(${scale})`;
+      const easing = layer.easing?.includes("power4") ? "cubic-bezier(.16,1,.3,1)" : "cubic-bezier(.22,1,.36,1)";
+      node.animate([
+        {opacity: 0, transform: transform(x, y, layer.fromScale), offset: 0},
+        {opacity: 1, transform: transform(0, 0, layer.toScale + layer.overshoot), offset: entry},
+        {opacity: 1, transform: transform(0, 0, layer.toScale), offset: settled},
+        {opacity: 1, transform: transform(0, 0, layer.toScale), offset: exit},
+        {opacity: 0, transform: transform(0, 0, layer.toScale), offset: 1}
+      ], {duration: total, delay: start, fill: "both", easing});
+    };
+    for (const item of [...assets, ...backLayers, ...foregroundLayers]) animateLayer(item.node, item.layer);
+    for (const [index, cue] of cues.entries()) {
+      const token = captionLayer.layers?.[0];
+      const node = document.getElementById(`layered-caption-${index}`);
+      if (token && node) animateLayer(node, {...token, inMs: Math.max(token.inMs, cue.start * 1000), outMs: Math.min(token.outMs, cue.end * 1000)});
+    }
+    document.getElementById("shot-root").animate([{opacity: 1}, {opacity: 1}], {duration: duration * 1000, fill: "both"});
+  </script>
+</body>
+</html>

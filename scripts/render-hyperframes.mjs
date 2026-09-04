@@ -11,7 +11,8 @@ const templates = Object.freeze({
   title: "compositions/title.html",
   captions: "compositions/animated-captions.html",
   "lower-third": "compositions/lower-third.html",
-  layered: "compositions/layered-portrait.html"
+  layered: "compositions/layered-portrait.html",
+  "strict-layered": "compositions/video-shot-layered-portrait.html"
 });
 
 function run(command, args, options) {

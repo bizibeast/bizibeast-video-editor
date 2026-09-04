@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "sourceSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "sourceBytes": 12345,
+  "width": 1080,
+  "height": 1920,
+  "durationMs": 1500,
+  "sampleFps": 2,
+  "timeRangeMs": {"startMs": 0, "endMs": 1500},
+  "frames": [
+    {
+      "index": 0,
+      "timeMs": 0,
+      "faceAnalysisAvailable": true,
+      "faceAnalysisError": null,
+      "faces": [{"box": {"x": 108, "y": 192, "width": 216, "height": 384}, "confidence": 0.96}],
+      "personAnalysisAvailable": true,
+      "personAnalysisError": null,
+      "subjectBox": {"x": 300, "y": 400, "width": 500, "height": 1000},
+      "subjectConfidence": 0.94,
+      "segmentationAttempted": true,
+      "segmentationAvailable": true,
+      "segmentationError": null,
+      "mattePath": "000000.png",
+      "matteCoverage": 0.2,
+      "edgeHaloPx": 1
+    },
+    {
+      "index": 1,
+      "timeMs": 500,
+      "faceAnalysisAvailable": true,
+      "faceAnalysisError": null,
+      "faces": [{"box": {"x": 110, "y": 194, "width": 216, "height": 384}, "confidence": 0.95}],
+      "personAnalysisAvailable": true,
+      "personAnalysisError": null,
+      "subjectBox": {"x": 303, "y": 402, "width": 500, "height": 1000},
+      "subjectConfidence": 0.93,
+      "segmentationAttempted": true,
+      "segmentationAvailable": true,
+      "segmentationError": null,
+      "mattePath": "000001.png",
+      "matteCoverage": 0.205,
+      "edgeHaloPx": 2
+    },
+    {
+      "index": 2,
+      "timeMs": 1000,
+      "faceAnalysisAvailable": true,
+      "faceAnalysisError": null,
+      "faces": [],
+      "personAnalysisAvailable": true,
+      "personAnalysisError": null,
+      "subjectBox": {"x": 700, "y": 400, "width": 300, "height": 1000},
+      "subjectConfidence": 0.91,
+      "segmentationAttempted": true,
+      "segmentationAvailable": true,
+      "segmentationError": null,
+      "mattePath": "000002.png",
+      "matteCoverage": 0.21,
+      "edgeHaloPx": 2
+    }
+  ]
+}

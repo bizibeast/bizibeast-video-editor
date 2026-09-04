@@ -23,7 +23,7 @@ export async function renderSmoke({keep = false} = {}) {
   const output = path.join(work, "captions.mov");
   const bin = path.join(repo, "node_modules/.bin/hyperframes");
   try {
-    await exec(bin, ["render", "-c", "compositions/animated-captions.html", "-o", output, "--format", "mov", "--fps", "5", "--workers", "1", "--quality", "draft", "--strict-all", "--quiet"], {cwd: path.join(repo, "templates/hyperframes"), maxBuffer: 12_000_000});
+    await exec(bin, ["render", "-c", "compositions/video-shot-layered-portrait.html", "-o", output, "--format", "mov", "--fps", "5", "--workers", "1", "--quality", "draft", "--strict-all", "--quiet"], {cwd: path.join(repo, "templates/hyperframes"), maxBuffer: 12_000_000});
     const probe = JSON.parse((await exec("ffprobe", ["-v", "error", "-select_streams", "v:0", "-show_entries", "stream=codec_name,pix_fmt,width,height,duration", "-of", "json", output])).stdout).streams[0];
     const alphaLog = await exec("ffmpeg", ["-v", "info", "-i", output, "-vf", "alphaextract,signalstats,metadata=print", "-f", "null", "-"], {maxBuffer: 12_000_000});
     const alpha = parseAlphaStats(`${alphaLog.stdout}\n${alphaLog.stderr}`);

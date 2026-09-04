@@ -4,6 +4,7 @@ import {access} from "node:fs/promises";
 import {spawn} from "node:child_process";
 import path from "node:path";
 import {parseArgs, print} from "./args.mjs";
+import {prepareMediaJob, readJsonOutput} from "./media-adapter.mjs";
 
 async function executable(name, env) {
   if (name.includes(path.sep)) {
@@ -37,13 +38,26 @@ export async function detectTranscriber(env = process.env) {
 export async function transcribe(input, output, env = process.env) {
   const command = configured(env, "BIZIBEAST_TRANSCRIBE_COMMAND");
   if (!command || !await executable(command[0], env)) throw new Error("No local transcriber configured. Set BIZIBEAST_TRANSCRIBE_COMMAND to a JSON argv array containing {input} and {output}.");
-  const args = command.slice(1).map((value) => value.replaceAll("{input}", path.resolve(input)).replaceAll("{output}", path.resolve(output)));
+  const {source, target} = await prepareMediaJob(input, output);
+  const args = command.slice(1).map((value) => value.replaceAll("{input}", source).replaceAll("{output}", target));
   await new Promise((resolve, reject) => {
     const child = spawn(command[0], args, {stdio: "inherit", env});
     child.on("error", reject);
     child.on("exit", (code) => code === 0 ? resolve() : reject(new Error(`Transcriber exited ${code}`)));
   });
-  return {input: path.resolve(input), output: path.resolve(output), engine: command[0]};
+  const transcript = await readJsonOutput(target, (value) => {
+    const words = value.words || value.segments?.flatMap((segment) => segment.words || []) || [];
+    if (!Array.isArray(words) || !words.length) throw new Error("Transcript output must contain timed words");
+    let previousEnd = 0;
+    for (const word of words) {
+      const start = Number(word.start ?? word.start_time);
+      const end = Number(word.end ?? word.end_time);
+      if (!String(word.text ?? word.word ?? "").trim() || !Number.isFinite(start) || !Number.isFinite(end) || start < previousEnd || end <= start) throw new Error("Transcript words must have ordered timing and text");
+      previousEnd = end;
+    }
+  }, "Transcriber");
+  const words = transcript.words || transcript.segments.flatMap((segment) => segment.words || []);
+  return {input: source, output: target, engine: command[0], words: words.length};
 }
 
 const {flags, positional} = parseArgs(process.argv.slice(2));
